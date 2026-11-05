@@ -5,6 +5,8 @@ import MapPanel from './MapPanel';
 import PreviewPanel from './PreviewPanel';
 import type { Coordinates } from './types';
 import { useImageLibrary } from './useImageLibrary';
+import ReferenceBirdImport from './ReferenceBirdImport';
+import type { BirdReferenceList } from './reference-list';
 
 export default function App() {
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
@@ -16,6 +18,7 @@ export default function App() {
   const [location, setLocation] = useState('');
   const [coordinates, setCoordinates] = useState<Coordinates | null>(null);
   const [notice, setNotice] = useState('');
+  const [referenceList, setReferenceList] = useState<BirdReferenceList | null>(null);
   const [dragging, setDragging] = useState(false);
   const filesInput = useRef<HTMLInputElement>(null);
   const dragDepth = useRef(0);
@@ -76,10 +79,10 @@ export default function App() {
       event.preventDefault(); dragDepth.current = 0; setDragging(false);
       importFiles(Array.from(event.dataTransfer.files));
     }}>
-      <header className="app-header"><div className="brand"><button className="brand-symbol theme-toggle" onClick={() => setTheme(value => value === 'light' ? 'dark' : 'light')} aria-label={`切换到${theme === 'light' ? '夜间' : '日间'}模式`} aria-pressed={theme === 'dark'} title={`点击切换到${theme === 'light' ? '夜间' : '日间'}模式`}><Bird size={24} strokeWidth={1.5} /></button><span className="brand-wordmark">野识<span>FIELDNOTES</span></span></div><div className="local-indicator"><span className="status-dot" /><span>本地工作空间</span><HardDrive size={14} /></div></header>
+      <header className="app-header"><div className="brand"><button className="brand-symbol theme-toggle" onClick={() => setTheme(value => value === 'light' ? 'dark' : 'light')} aria-label={`切换到${theme === 'light' ? '夜间' : '日间'}模式`} aria-pressed={theme === 'dark'} title={`点击切换到${theme === 'light' ? '夜间' : '日间'}模式`}><Bird size={24} strokeWidth={1.5} /></button><span className="brand-wordmark">WildScene<span>FIELDNOTES</span></span></div><div className="local-indicator"><span className="status-dot" /><span>本地工作空间</span><HardDrive size={14} /></div></header>
       <main className="workspace">
         <div className="workspace-grid"><aside className="sidebar"><FilePanel images={images} filteredImages={filteredImages} selectedId={selectedId} query={query} onQueryChange={setQuery} onImportFolder={chooseDirectory} onImportFiles={() => filesInput.current?.click()} onSelect={setSelectedId} onLabel={onLabel} onEditStart={onEditStart} onEditEnd={onEditEnd} syncStatus={syncStatus} onSyncRetry={restoreOrRetry} loading={loading} onImageError={onImageError} onRetry={(id, value) => onRetry(new Set([id]), value)} onRetryAll={value => onRetry(new Set(filteredImages.map(image => image.id)), value)} /><MapPanel location={location} coordinates={coordinates} onLocationChange={setLocation} onCoordinatesChange={setCoordinates} /></aside><div className="preview-column">
-          <div className="workspace-toolbar"><div className="action-toolbar"><span className="batch-status"><span className="status-dot" />准备就绪</span><button className="button start-button" disabled title="识别功能尚未接入"><Play size={15} fill="currentColor" />开始</button><button className="button pause-button" disabled title="暂停功能尚未接入"><Pause size={15} />暂停</button><span className="action-divider" /><button className="button export-button" disabled title="导出功能尚未接入"><Download size={16} />导出已完成</button></div></div>
+          <div className="workspace-toolbar"><div className="action-toolbar"><ReferenceBirdImport value={referenceList} onChange={setReferenceList} onNotice={setNotice} /><span className="batch-status"><span className="status-dot" />准备就绪</span><button className="button start-button" disabled title="识别功能尚未接入"><Play size={15} fill="currentColor" />开始</button><button className="button pause-button" disabled title="暂停功能尚未接入"><Pause size={15} />暂停</button><span className="action-divider" /><button className="button export-button" disabled title="导出功能尚未接入"><Download size={16} />导出已完成</button></div></div>
           <PreviewPanel image={selectedImage} index={selectedIndex} total={images.length} onNavigate={navigate} onLabel={onLabel} onEditStart={onEditStart} onEditEnd={onEditEnd} onImageError={onImageError} /></div></div>
         <footer className="workspace-footer"><span><ShieldCheck size={14} />图片仅在本机预览</span><span className="footer-stats"><span><span className="mini-dot" />{images.length} 张图片</span><span>{labeledCount} 张已标注</span><span>{retryCount} 张待重新识别</span></span><span className="keyboard-hint"><kbd>←</kbd><kbd>→</kbd> 切换图片</span></footer>
       </main>

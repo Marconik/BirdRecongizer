@@ -95,6 +95,16 @@ input::placeholder, .file-label-cell input::placeholder { color: var(--placehold
 .start-button { background: var(--accent-soft); color: var(--disabled-text); border-color: var(--border); }
 .pause-button, .export-button { background: var(--disabled-bg); color: var(--disabled-text); border-color: var(--border); }
 .batch-status { color: var(--secondary); font-size: 12px; font-weight: 500; }
+.reference-import { position: relative; min-width: 0; max-width: 240px; margin-right: 7px; }
+.reference-import-controls { display: flex; align-items: center; gap: 2px; min-width: 0; }
+.reference-import-button { min-width: 0; max-width: 210px; padding: 0 11px; color: var(--secondary); background: var(--input); border-color: var(--border-strong); font-size: 12px; }
+.reference-import-button:hover:not(:disabled) { color: var(--accent-ink); background: var(--hover); border-color: var(--focus); }
+.reference-import-button.has-reference { color: var(--accent-ink); background: var(--accent-soft); }
+.reference-file-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.reference-count { flex-shrink: 0; border-left: 1px solid var(--border-strong); padding-left: 8px; font-size: 10px; font-variant-numeric: tabular-nums; }
+.reference-remove { width: 23px; height: 27px; flex-shrink: 0; }
+.reference-import-error { position: absolute; z-index: 5; top: calc(100% + 5px); left: 0; min-width: 200px; max-width: min(310px, 80vw); padding: 8px 10px; background: var(--panel); color: #9a4c22; border: 1px solid var(--border-strong); border-radius: 5px; box-shadow: var(--shadow); font-size: 11px; line-height: 1.5; }
+:root[data-theme="dark"] .reference-import-error { color: #efbb85; }
 .action-divider { background: var(--border); }
 .file-search { background: var(--input); border-color: var(--border); color: var(--muted); }
 .file-search:focus-within, .location-input-wrap:focus-within { border-color: var(--focus); }
@@ -179,6 +189,9 @@ kbd { background: var(--panel); color: var(--secondary); border-color: var(--bor
   .file-panel .file-panel-heading { padding: 0 21px; }
 }
 @media (max-width: 1150px) {
+  .reference-import { max-width: 190px; margin-right: 0; }
+  .reference-import-button { max-width: 165px; padding: 0 8px; font-size: 11px; }
+  .reference-import + .batch-status { display: none; }
   .file-panel .file-panel-heading { padding: 0 12px; gap: 7px; }
   .file-panel-heading .heading-title { gap: 6px; }
   .file-import-actions { gap: 5px; }
@@ -197,6 +210,10 @@ kbd { background: var(--panel); color: var(--secondary); border-color: var(--bor
   .file-list-footer, .workspace-footer { font-size: 10px; }
 }
 @media (max-width: 650px) {
+  .preview-column .workspace-toolbar { height: auto; min-height: 38px; }
+  .action-toolbar { width: 100%; }
+  .reference-import { flex-basis: 100%; max-width: none; margin: 0 0 3px; }
+  .reference-import-button { max-width: calc(100% - 26px); font-size: 12px; }
   .sidebar { grid-template-rows: 340px 350px; }
   .file-panel .file-panel-heading { padding: 0 15px; }
   .file-panel-heading h2 { font-size: 14px; }
@@ -206,6 +223,12 @@ kbd { background: var(--panel); color: var(--secondary); border-color: var(--bor
   .preview-empty-tip { font-size: 10px; letter-spacing: .4px; }
   .file-name-text strong, .file-label-cell input { font-size: 12px; }
   .action-toolbar { flex-wrap: wrap; gap: 7px; }
+}
+@media (min-width: 651px) and (max-width: 1050px) {
+  .preview-column .workspace-toolbar { height: auto; min-height: 44px; }
+  .action-toolbar { width: 100%; flex-wrap: wrap; }
+  .reference-import { flex-basis: 100%; max-width: none; margin: 0 0 3px; display: flex; justify-content: flex-end; }
+  .reference-import-button { max-width: 240px; }
 }
 @media (min-width: 851px) and (max-height: 850px) {
   .sidebar { grid-template-rows: minmax(260px, .92fr) minmax(260px, 1.08fr); }
