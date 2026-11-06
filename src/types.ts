@@ -9,6 +9,8 @@ export interface ImageItem {
   writable: boolean;
   workspaceId?: string;
   directoryKey?: string;
+  editRevision?: number;
+  recognition?: { status: 'running' | 'confirmed' | 'needs_review' | 'error' | 'skipped'; reason: string };
 }
 
 export interface Coordinates {

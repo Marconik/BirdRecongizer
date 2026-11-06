@@ -1,0 +1,30 @@
+.usage-dialog { width: min(780px, calc(100vw - 32px)); }
+.usage-content { display: grid; gap: 20px; }
+.usage-controls { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.usage-ranges { display: flex; gap: 4px; padding: 4px; border: 1px solid var(--settings-border); border-radius: 9px; background: var(--settings-soft); }
+.usage-ranges button { padding: 9px 16px; border: 0; border-radius: 6px; font-size: 14px; font-weight: 650; color: var(--settings-body); background: transparent; }
+.usage-ranges button[aria-pressed="true"] { color: var(--settings-action-text); background: var(--settings-action-bg); }
+.usage-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.usage-token-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.usage-card { display: grid; gap: 9px; padding: 18px; border: 1px solid var(--settings-border); border-radius: 10px; background: var(--settings-soft); }
+.usage-card > span { font-size: 14px; font-weight: 600; color: var(--settings-body); }
+.usage-card > strong { font-size: 27px; line-height: 1.2; font-weight: 750; font-variant-numeric: tabular-nums; color: var(--settings-heading); overflow-wrap: anywhere; }
+.usage-card > small { font-size: 12px; line-height: 1.6; color: var(--settings-muted); }
+.usage-facts { margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 24px; font-size: 13px; }
+.usage-facts > div { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; }
+.usage-facts dt { color: var(--settings-muted); }
+.usage-facts dd { margin: 0; font-weight: 650; color: var(--settings-heading); }
+.usage-warning { padding: 12px 14px; border: 1px solid var(--settings-border); border-left: 3px solid var(--settings-accent); border-radius: 6px; background: var(--settings-soft); color: var(--settings-body); font-size: 13px; line-height: 1.8; }
+.usage-table-wrap { overflow-x: auto; }
+.usage-table { width: 100%; min-width: 520px; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; }
+.usage-table caption { text-align: left; font-size: 15px; font-weight: 700; color: var(--settings-heading); margin-bottom: 12px; }
+.usage-table th, .usage-table td { padding: 12px 10px; text-align: right; border-bottom: 1px solid var(--border); }
+.usage-table thead th { background: var(--settings-soft); color: var(--settings-heading); font-weight: 650; white-space: nowrap; }
+.usage-table tr > :first-child { text-align: left; }
+.usage-table tbody th { max-width: 280px; font-weight: 500; overflow-wrap: anywhere; }
+.usage-table tbody th strong { display: block; font-size: 14px; color: var(--settings-heading); font-weight: 600; }
+.usage-table tbody th span { display: block; margin-top: 6px; color: var(--settings-muted); font-size: 11px; }
+.usage-empty { padding: 20px; border: 1px dashed var(--settings-border); border-radius: 8px; text-align: center; font-size: 14px; line-height: 1.8; color: var(--settings-muted); }
+.usage-period { font-size: 12px; line-height: 1.6; color: var(--settings-muted); }
+@media (max-width: 480px) { .usage-facts { grid-template-columns: minmax(0, 1fr); } .usage-card { padding: 13px; } .usage-card > strong { font-size: 23px; } .usage-ranges button { padding: 8px 12px; } }
+@media (max-width: 600px) { .usage-token-grid { grid-template-columns: minmax(0, 1fr); } }

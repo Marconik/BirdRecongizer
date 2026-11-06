@@ -55,15 +55,20 @@ export async function readCachedDirectory(): Promise<CachedDirectory | undefined
   } finally { db.close(); }
 }
 
-export async function cacheDirectory(value: CachedDirectory): Promise<void> {
+async function updateCachedDirectory(value?: CachedDirectory): Promise<void> {
   const db = await database();
   try {
     await new Promise<void>((resolve, reject) => {
       const transaction = db.transaction('workspace', 'readwrite');
-      transaction.objectStore('workspace').put(value, 'directory');
+      const store = transaction.objectStore('workspace');
+      if (value) store.put(value, 'directory');
+      else store.delete('directory');
       transaction.oncomplete = () => resolve();
       transaction.onerror = () => reject(transaction.error);
       transaction.onabort = () => reject(transaction.error);
     });
   } finally { db.close(); }
 }
+
+export async function cacheDirectory(value: CachedDirectory): Promise<void> { await updateCachedDirectory(value); }
+export async function clearCachedDirectory(): Promise<void> { await updateCachedDirectory(); }

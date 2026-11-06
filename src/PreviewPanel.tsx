@@ -75,6 +75,7 @@ export default function PreviewPanel({ image, index, total, onNavigate, onLabel,
         {fullscreenError && <p className="fullscreen-error" role="status">{fullscreenError}</p>}
       </div>
       <div className="preview-meta"><span className="preview-meta-name">{image ? image.path : '尚未选择图片'}</span><span>{currentDimensions ? `${currentDimensions.width.toLocaleString()} × ${currentDimensions.height.toLocaleString()} px` : '—'}</span></div>
+      {image?.recognition && <p className={`recognition-detail is-${image.recognition.status}`} role="status"><strong>{{ running: '识别中', confirmed: '已识别', needs_review: '待确认 · 已勾选重识别', error: '识别失败 · 可重试', skipped: '保留手动编辑' }[image.recognition.status]}</strong><span>{image.recognition.reason}</span></p>}
       <div className="annotation-bar"><div className="annotation-input"><label htmlFor="active-label"><Tag size={16} />物种标签</label><input id="active-label" value={image?.label ?? ''} disabled={!image?.writable} onFocus={() => image && onEditStart(image.id)} onBlur={() => image && onEditEnd(image.id)} onChange={event => image && onLabel(image.id, event.target.value)} placeholder={image?.writable ? '多个标签用逗号分隔，自动保存' : '选择图片文件夹后可编辑标签'} /></div><span className={`annotation-status ${image?.label.trim() ? 'has-label' : ''}`}>{image?.label.trim() ? <><Tag size={12} /> 已标注</> : <><RotateCcw size={12} /> 待标注</>}</span></div>
     </section>
   );

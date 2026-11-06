@@ -2,9 +2,33 @@ node_modules/
 dist/
 .vite/
 *.local
+*.local.*
 .env
 .env.*
 !.env.example
 data/
 artifacts/
 *.log
+
+# Private machine settings, credentials, datasets and generated exports.
+.codex/
+.agents/
+.aws/
+.vscode/
+.idea/
+.npmrc
+.netrc
+*.pem
+*.key
+*.p12
+*.pfx
+*.sqlite
+*.sqlite3
+photos/
+datasets/
+exports/
+**/tags.json
+
+# One-off local benchmarks contain private locations and photo metadata.
+/scripts/benchmark.mjs
+/scripts/summarize-benchmark.mjs

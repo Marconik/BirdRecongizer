@@ -11,6 +11,9 @@ interface Props {
   onQueryChange: (query: string) => void;
   onImportFolder: () => void;
   onImportFiles: () => void;
+  onClearSelection: () => void;
+  hasSelection: boolean;
+  clearing: boolean;
   onSelect: (id: string) => void;
   onLabel: (id: string, label: string) => void;
   onEditStart: (id: string) => void;
@@ -25,13 +28,15 @@ interface Props {
 
 const ROW_HEIGHT = 72;
 
-export default function FilePanel({ images, filteredImages, selectedId, query, onQueryChange, onImportFolder, onImportFiles, onSelect, onLabel, onEditStart, onEditEnd, syncStatus, onSyncRetry, loading, onRetry, onRetryAll, onImageError }: Props) {
+export default function FilePanel({ images, filteredImages, selectedId, query, onQueryChange, onImportFolder, onImportFiles, onClearSelection, hasSelection, clearing, onSelect, onLabel, onEditStart, onEditEnd, syncStatus, onSyncRetry, loading, onRetry, onRetryAll, onImageError }: Props) {
   const scroller = useRef<HTMLDivElement>(null);
   const allCheckbox = useRef<HTMLInputElement>(null);
+  const lastSelectedId = useRef(selectedId);
   const [scrollTop, setScrollTop] = useState(0);
   const [height, setHeight] = useState(300);
   const [bodyWidth, setBodyWidth] = useState(0);
   const retryCount = filteredImages.filter(image => image.retry).length;
+  const libraryId = images[0]?.id;
   const start = Math.max(0, Math.floor(scrollTop / ROW_HEIGHT) - 3);
   const end = Math.min(filteredImages.length, start + Math.ceil(height / ROW_HEIGHT) + 7);
 
@@ -52,9 +57,13 @@ export default function FilePanel({ images, filteredImages, selectedId, query, o
   useEffect(() => {
     scroller.current?.scrollTo({ top: 0 });
     setScrollTop(0);
-  }, [query, images.length]);
+  }, [query, libraryId]);
 
   useEffect(() => {
+    // Tag polling changes the array identity even when selection stays the same.
+    // Only a new selected image should take control of the user's scroll position.
+    if (lastSelectedId.current === selectedId) return;
+    lastSelectedId.current = selectedId;
     const index = filteredImages.findIndex(image => image.id === selectedId);
     const container = scroller.current;
     if (!container || index < 0) return;
@@ -68,14 +77,15 @@ export default function FilePanel({ images, filteredImages, selectedId, query, o
       <div className="panel-heading file-panel-heading">
         <div className="heading-title"><Images size={17} /><h2 id="files-heading">图片文件</h2><span className="count-badge">{images.length}</span></div>
         <div className="file-import-actions">
-          <button className="button import-button" disabled={loading} onClick={onImportFolder}><FolderOpen size={15} />{loading ? '正在打开…' : '选择文件夹'}</button>
-          <button className="icon-button add-files-button" aria-label="选择图片文件" title="添加图片" onClick={onImportFiles}><ImagePlus size={17} /></button>
+          <button className="button import-button" disabled={loading || clearing} onClick={onImportFolder}><FolderOpen size={15} />{loading ? '正在打开…' : '选择文件夹'}</button>
+          <button className="icon-button add-files-button" disabled={loading || clearing} aria-label="选择图片文件" title="添加图片" onClick={onImportFiles}><ImagePlus size={17} /></button>
+          <button className="icon-button add-files-button clear-selection-button" disabled={!hasSelection || loading || clearing} aria-label="取消当前文件选择" aria-busy={clearing} title="取消当前文件夹或图片选择，保留图片和标签" onClick={onClearSelection}><X size={17} /></button>
         </div>
       </div>
-      <div className={`library-sync${syncStatus.error ? ' sync-error' : ''}`} role={syncStatus.error ? 'alert' : 'status'}>
-        <span title={syncStatus.text}>{syncStatus.pending ? '● ' : ''}{syncStatus.text}</span>
-        {(syncStatus.error || syncStatus.restore) && <button className="text-button" onClick={onSyncRetry}>{syncStatus.restore ? '继续打开' : '重试'}</button>}
-      </div>
+      {(syncStatus.error || syncStatus.restore) && <div className={`library-sync${syncStatus.error ? ' sync-error' : ''}`} role={syncStatus.error ? 'alert' : 'status'}>
+        <span>{syncStatus.text}</span>
+        <button className="text-button" onClick={onSyncRetry}>{syncStatus.restore ? '继续打开' : '重试'}</button>
+      </div>}
       <div className="file-search">
         <Search size={15} aria-hidden="true" />
         <input aria-label="搜索文件或标签" placeholder="搜索文件名或标签…" value={query} onChange={event => onQueryChange(event.target.value)} />
@@ -107,7 +117,7 @@ export default function FilePanel({ images, filteredImages, selectedId, query, o
                   <div role="cell" className="file-name-cell">
                     <button className="file-select" onClick={() => onSelect(image.id)} aria-label={`预览 ${image.path}`} aria-pressed={selectedId === image.id} title={image.path}>
                       <span className="thumbnail">{image.error ? <FileImage size={19} /> : <img src={image.url} alt="" loading="lazy" decoding="async" onError={() => onImageError(image.id)} />}</span>
-                      <span className="file-name-text"><strong>{image.file.name}</strong><span>{image.error ? '无法预览' : image.file.size < 1024 * 1024 ? `${Math.max(1, Math.round(image.file.size / 1024))} KB` : `${(image.file.size / (1024 * 1024)).toFixed(1)} MB`}</span></span>
+                      <span className="file-name-text"><strong>{image.file.name}</strong><span title={image.recognition?.reason}>{image.recognition ? { running: '识别中…', confirmed: '已识别 · eBird v2026', needs_review: '待确认', error: '识别失败', skipped: '保留手动编辑' }[image.recognition.status] : image.error ? '无法预览' : image.file.size < 1024 * 1024 ? `${Math.max(1, Math.round(image.file.size / 1024))} KB` : `${(image.file.size / (1024 * 1024)).toFixed(1)} MB`}</span></span>
                     </button>
                   </div>
                   <div role="cell" className="file-label-cell"><input aria-label={`${image.path} 的标签`} value={image.label} disabled={!image.writable} onFocus={() => onEditStart(image.id)} onBlur={() => onEditEnd(image.id)} onChange={event => onLabel(image.id, event.target.value)} placeholder="待标注" title={image.writable ? image.label || '多个标签用逗号分隔，自动保存' : '请选择图片所在文件夹以保存标签'} /></div>
