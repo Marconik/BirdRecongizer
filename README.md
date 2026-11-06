@@ -6,6 +6,8 @@
 
 ## 启动
 
+普通用户可下载 [GitHub Release](https://github.com/Marconik/BirdRecongizer/releases) 的预构建附件，按 [首次部署指南](QUICKSTART.md) 安装。Windows 依次运行 `install.cmd` 和 `start.cmd`；以下是源码开发方式。
+
 需要 Node.js **24 LTS**及支持文件夹读写的桌面 Edge / Chrome。
 
 ```powershell

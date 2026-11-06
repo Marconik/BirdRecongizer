@@ -98,6 +98,7 @@ export async function createAppServer({ production = false, port = 5174, provide
       if (path.startsWith('/api/')) throw problem('API 不存在。', 404);
       if (!production || !['GET', 'HEAD'].includes(request.method)) throw problem('页面不存在。', 404);
       const root = resolve('dist'), relative = decodeURIComponent(path).replace(/^\/+/, '');
+      if (relative.split(/[/\\]/).some(part => part.startsWith('.') || ['data','artifacts','node_modules'].includes(part))) throw problem('页面不存在。', 404);
       let file = resolve(root, relative || 'index.html');
       if (!file.startsWith(root + sep)) throw problem('页面不存在。', 404);
       try { if (!(await stat(file)).isFile()) throw problem('文件不存在。', 404); } catch { if (extname(file)) throw problem('文件不存在。', 404); file = resolve(root, 'index.html'); }
