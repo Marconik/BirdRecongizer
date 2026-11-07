@@ -1,6 +1,6 @@
 <h1 align="center">WildScene</h1>
 
-<h4 align="center">BirdRecongizer</h4>
+<h3 align="center">BirdRecongizer</h3>
 
 <p align="center">
   <a href="https://developer.mozilla.org/docs/Web/JavaScript"><img alt="JavaScript" src="https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&amp;logo=javascript&amp;logoColor=black" /></a>
@@ -16,7 +16,7 @@
 </p>
 <img src="README.assets/background (1).png" alt="background (1)" style="zoom:50%;" />
 
-> 作者: Marconi
+> 作者: [Marconi](https://marconik.github.io/blogs/2026-11-05.html)
 >
 > 感谢ChatGPT的帮助
 
